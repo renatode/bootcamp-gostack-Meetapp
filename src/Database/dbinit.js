@@ -3,17 +3,20 @@ import dbConfig from '../Config/database';
 
 import User from '../App/Models/User';
 import File from '../App/Models/File';
+import Meetup from '../App/Models/Meetup';
 
-const models = [User, File];
+const models = [User, File, Meetup];
 
 class Database {
   constructor() {
-    this.conection = new Sequelize(dbConfig);
     this.init();
   }
 
   init() {
-    models.map(model => model.init(this.conection));
+    this.conection = new Sequelize(dbConfig);
+    models
+      .map(model => model.init(this.conection))
+      .map(model => model.associate && model.associate(this.conection.models));
 
     // Teste conexão com db
     this.conection
